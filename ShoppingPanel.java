@@ -1,3 +1,4 @@
+import next1.NextPage1;
 import shop.NextPage;
 
 import javax.swing.*;
@@ -238,16 +239,8 @@ public class StorePage extends JFrame {
                         if ("sania".equals(adminUsername) && "saba".equals(adminPassword)) {
                             JOptionPane.showMessageDialog(adminLoginPage, "ورود مدیر موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             adminLoginPage.dispose();
-                            JDialog nextPageDialog = new JDialog();
-                            nextPageDialog.setTitle("صفحه بعدی");
-                            nextPageDialog.setSize(400, 400);
-                            nextPageDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                            new NextPage1();
 
-// اضافه کردن محتوای جعبه دیالوگ
-                            nextPageDialog.add(new JLabel("محتوای صفحه بعدی"));
-
-// نمایش جعبه دیالوگ
-                            nextPageDialog.setVisible(true);
 
                         } else {
                             JOptionPane.showMessageDialog(adminLoginPage, "نام کاربری یا رمز عبور مدیر اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
