@@ -1,218 +1,288 @@
-
+import shop.NextPage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.border.Border;
-import javax.swing.JOptionPane;
 
-public class ShoppingPanel extends JFrame {
-    private JPanel panel;
-    private JPanel registerPanel;
+public class StorePage extends JFrame {
+    private JButton registerButton;
+    private JButton loginButton;
+    private JButton adminLoginButton;
 
-    public ShoppingPanel() {
-        setTitle("Shopping Panel");
-        setSize(400, 300);
+    public StorePage() {
+        setTitle("فروشگاه آنلاین");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 300);
+        setLocationRelativeTo(null);
 
-        panel = new JPanel(new GridLayout(4, 2));
-        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 1));
 
-        String[] items = {"کفش", "جوراب", "پیراهن", "شلوار"};
+        JLabel storeNameLabel = new JLabel("نام فروشگاه");
+        storeNameLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        panel.add(storeNameLabel);
 
-        for (String item : items) {
-            JLabel label = new JLabel(item);
-            JButton addButton = new JButton("افزودن به سبد خرید");
-            addButton.setBackground(Color.LIGHT_GRAY);
-            addButton.setBorder(border);
-
-            addButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "محصول " + item + " به سبد خرید اضافه شد.");
-                }
-            });
-            
-
-            panel.add(label);
-            panel.add(addButton);
-        }
-
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton loginButton = new JButton("ورود");
-        JButton registerButton = new JButton("ثبت نام");
-
-        topPanel.add(loginButton);
-        topPanel.add(registerButton);
-
-        add(topPanel, BorderLayout.NORTH);
-
-        registerPanel = new JPanel(new GridLayout(8, 2));
-        JLabel nameLabel = new JLabel("نام:");
-        JTextField nameField = new JTextField();
-        JLabel lastNameLabel = new JLabel("نام خانوادگی:");
-        JTextField lastNameField = new JTextField();
-        JLabel numberLabel = new JLabel("شماره:");
-        JTextField numberField = new JTextField();
-        JLabel usernameLabel = new JLabel("نام کاربری:");
-        JTextField usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("رمز عبور:");
-        JPasswordField passwordField = new JPasswordField();
-        JLabel confirmPasswordLabel = new JLabel("تکرار رمز عبور:");
-        JPasswordField confirmPasswordField = new JPasswordField();
-        JButton registerSubmitButton = new JButton("ثبت نام");
-
-        registerSubmitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean isError = false;
-
-                if (nameField.getText().isEmpty()) {
-                    nameField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    nameField.setBackground(Color.WHITE);
-                }
-
-                if (lastNameField.getText().isEmpty()) {
-                    lastNameField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    lastNameField.setBackground(Color.WHITE);
-                }
-
-                if (numberField.getText().isEmpty()) {
-                    numberField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    numberField.setBackground(Color.WHITE);
-                }
-
-                if (usernameField.getText().isEmpty()) {
-                    usernameField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    usernameField.setBackground(Color.WHITE);
-                }
-
-                if (passwordField.getPassword().length == 0) {
-                    passwordField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    passwordField.setBackground(Color.WHITE);
-                }
-
-                if (confirmPasswordField.getPassword().length == 0) {
-                    confirmPasswordField.setBackground(Color.RED);
-                    isError = true;
-                } else {
-                    confirmPasswordField.setBackground(Color.WHITE);
-                }
-
-                if (isError) {
-                    JOptionPane.showMessageDialog(null, "لطفاً تمام فیلدها را پر کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "ثبت نام با موفقیت انجام شد.");
-                }
-            }
-        });
-
-        registerPanel.add(nameLabel);
-        registerPanel.add(nameField);
-        registerPanel.add(lastNameLabel);
-        registerPanel.add(lastNameField);
-        registerPanel.add(numberLabel);
-        registerPanel.add(numberField);
-        registerPanel.add(usernameLabel);
-        registerPanel.add(usernameField);
-        registerPanel.add(passwordLabel);
-        registerPanel.add(passwordField);
-        registerPanel.add(confirmPasswordLabel);
-        registerPanel.add(confirmPasswordField);
-        registerPanel.add(registerSubmitButton);
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                remove(panel);
-                add(registerPanel);
-                revalidate();
-                repaint();
-            }
-        });
-
+        registerButton = new JButton("ثبت نام");
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                remove(panel);
-                add(registerPanel);
-                revalidate();
-                repaint();
+                JFrame registerPage = new JFrame("صفحه ثبت نام");
+                registerPage.setSize(400, 300);
+                registerPage.setLocationRelativeTo(null);
+
+                JPanel registerPanel = new JPanel();
+                registerPanel.setLayout(new GridLayout(8, 2));
+
+                JLabel nameLabel = new JLabel("نام:");
+                JTextField nameTextField = new JTextField();
+                registerPanel.add(nameLabel);
+                registerPanel.add(nameTextField);
+
+                JLabel lastNameLabel = new JLabel("نام خانوادگی:");
+                JTextField lastNameTextField = new JTextField();
+                registerPanel.add(lastNameLabel);
+                registerPanel.add(lastNameTextField);
+
+                JLabel phoneNumberLabel = new JLabel("شماره تلفن همراه:");
+                JTextField phoneNumberTextField = new JTextField();
+                registerPanel.add(phoneNumberLabel);
+                registerPanel.add(phoneNumberTextField);
+
+                JLabel usernameLabel = new JLabel("نام کاربری:");
+                JTextField usernameTextField = new JTextField();
+                registerPanel.add(usernameLabel);
+                registerPanel.add(usernameTextField);
+
+                JLabel passwordLabel = new JLabel("رمز عبور:");
+                JPasswordField passwordField = new JPasswordField();
+                registerPanel.add(passwordLabel);
+                registerPanel.add(passwordField);
+
+                JLabel confirmPasswordLabel = new JLabel("تکرار رمز عبور:");
+                JPasswordField confirmPasswordField = new JPasswordField();
+                registerPanel.add(confirmPasswordLabel);
+                registerPanel.add(confirmPasswordField);
+
+                JButton submitButton = new JButton("ثبت نام");
+                JButton backButton = new JButton("بازگشت");
+
+                submitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = nameTextField.getText();
+                        String lastName = lastNameTextField.getText();
+                        String phoneNumber = phoneNumberTextField.getText();
+                        String username = usernameTextField.getText();
+                        String password = new String(passwordField.getPassword());
+                        String confirmPassword = new String(confirmPasswordField.getPassword());
+
+                        boolean hasError = false;
+                        StringBuilder errorMessage = new StringBuilder();
+
+                        // اعتبارسنجی شماره تلفن همراه
+                        if (phoneNumber.length() != 11) {
+                            hasError = true;
+                            errorMessage.append("شماره تلفن همراه باید 11 رقم باشد.\n");
+                            phoneNumberTextField.setBackground(Color.RED);
+                        } else {
+                            phoneNumberTextField.setBackground(Color.WHITE);
+                        }
+
+                        // اعتبارسنجی رمز عبور و تکرار رمز عبور
+                        if (!password.equals(confirmPassword)) {
+                            hasError = true;
+                            errorMessage.append("رمز عبور و تکرار رمز عبور باید یکسان باشند.\n");
+                            passwordField.setBackground(Color.RED);
+                            confirmPasswordField.setBackground(Color.RED);
+                        } else {
+                            passwordField.setBackground(Color.WHITE);
+                            confirmPasswordField.setBackground(Color.WHITE);
+                        }
+
+                        // اعتدام کد...
+
+                        if (hasError) {
+                            JOptionPane.showMessageDialog(registerPage, errorMessage.toString(), "خطا", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            // ثبت نام موفقیت‌آمیز است
+                            // اضافه کردن اطلاعات کاربر به پایگاه داده یا سایر عملیات مربوطه
+
+                            // نمایش پیام موفقیت‌آمیز
+                            JOptionPane.showMessageDialog(registerPage, "ثبت نام با موفقیت انجام شد.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
+
+                            // پاک کردن فیلدها
+                            nameTextField.setText("");
+                            lastNameTextField.setText("");
+                            phoneNumberTextField.setText("");
+                            usernameTextField.setText("");
+                            passwordField.setText("");
+                            confirmPasswordField.setText("");
+                        }
+                    }
+                });
+
+                backButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        registerPage.dispose();
+                    }
+                });
+
+                registerPanel.add(submitButton);
+                registerPanel.add(backButton);
+
+                registerPage.add(registerPanel);
+                registerPage.setVisible(true);
             }
         });
-        // ... (previous code)
 
+        loginButton = new JButton("ورود");
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextField loginUsernameField = new JTextField(10);
-                JPasswordField loginPasswordField = new JPasswordField(10);
+                JFrame loginPage = new JFrame("صفحه ورود");
+                loginPage.setSize(400, 200);
+                loginPage.setLocationRelativeTo(null);
 
                 JPanel loginPanel = new JPanel();
-                loginPanel.add(new JLabel("نام کاربری:"));
-                loginPanel.add(loginUsernameField);
-                loginPanel.add(new JLabel("رمز عبور:"));
-                loginPanel.add(loginPasswordField);
+                loginPanel.setLayout(new GridLayout(3, 2));
 
-                int result = JOptionPane.showConfirmDialog(null, loginPanel, "ورود", JOptionPane.OK_CANCEL_OPTION);
+                JLabel usernameLabel = new JLabel("نام کاربری:");
+                JTextField usernameTextField = new JTextField();
+                loginPanel.add(usernameLabel);
+                loginPanel.add(usernameTextField);
 
-                if (result == JOptionPane.OK_OPTION) {
-                    String enteredUsername = loginUsernameField.getText();
-                    String enteredPassword = new String(loginPasswordField.getPassword());
+                JLabel passwordLabel = new JLabel("رمز عبور:");
+                JPasswordField passwordField = new JPasswordField();
+                loginPanel.add(passwordLabel);
+                loginPanel.add(passwordField);
 
-                    if (enteredUsername.equals(usernameField.getText()) && enteredPassword.equals(new String(passwordField.getPassword()))) {
-                        JOptionPane.showMessageDialog(null, "ورود موفقیت آمیز بود.");
-                        // Clear fields or take other action upon successful login
-                    } else {
-                        JOptionPane.showMessageDialog(null, "نام کاربری یا رمز عبور اشتباه است.");
+                JButton submitButton = new JButton("ورود");
+                JButton backButton = new JButton("بازگشت");
+
+                submitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String username = usernameTextField.getText();
+                        String password = new String(passwordField.getPassword());
+
+                        // اعتبارسنجی نام کاربری و رمز عبور
+                        if (username.isEmpty() || password.isEmpty()) {
+                            JOptionPane.showMessageDialog(loginPage, "نام کاربری و رمز عبور را وارد کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        // اعتبارسنجی نام کاربری و رمز عبور با اطلاعات ثبت نام شده
+                        // اگر اطلاعات صحیح نبودند، پیام خطا نمایش داده می‌شود
+                        // اگر اطلاعات صحیح بودند، صفحه سفید می‌شود
+
+                        if (isValidLogin(username, password)) {
+                            JOptionPane.showMessageDialog(loginPage, "ورود موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
+                            loginPage.dispose();
+                            new NextPage();
+
+
+                        } else {
+                            JOptionPane.showMessageDialog(loginPage, "نام کاربری یا رمز عبور اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-                }
+                });
+
+                backButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        loginPage.dispose();
+                    }
+                });
+
+                loginPanel.add(submitButton);
+                loginPanel.add(backButton);
+
+                loginPage.add(loginPanel);
+                loginPage.setVisible(true);
             }
-
         });
-        JPanel shoppingCartPanel = new JPanel(new GridLayout(4, 2));
-        items = new String[]{"پیراهن", "شلوار", "جوراب", "کفش"};
 
-        for (String item : items) {
-            JLabel itemLabel = new JLabel(item);
-            JButton addToCartBtn = new JButton("افزودن به سبد خرید");
-            JButton removeFromCartBtn = new JButton("حذف از سبد خرید");
+        adminLoginButton = new JButton("ورود مدیر");
+        adminLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame adminLoginPage = new JFrame("ورود مدیر");
+                adminLoginPage.setSize(400, 200);
+                adminLoginPage.setLocationRelativeTo(null);
 
-            addToCartBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "محصول " + item + " به سبد خرید اضافه شد.");
-                }
-            });
+                JPanel adminLoginPanel = new JPanel();
+                adminLoginPanel.setLayout(new GridLayout(3, 2));
 
-            removeFromCartBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "محصول " + item + " از سبد خرید حذف شد.");
-                }
-            });
+                JLabel adminUsernameLabel = new JLabel("نام کاربری مدیر:");
+                JTextField adminUsernameTextField = new JTextField();
+                adminLoginPanel.add(adminUsernameLabel);
+                adminLoginPanel.add(adminUsernameTextField);
 
-            shoppingCartPanel.add(itemLabel);
-            shoppingCartPanel.add(addToCartBtn);
-            shoppingCartPanel.add(removeFromCartBtn);
-        }
+                JLabel adminPasswordLabel = new JLabel("رمز عبور مدیر:");
+                JPasswordField adminPasswordField = new JPasswordField();
+                adminLoginPanel.add(adminPasswordLabel);
+                adminLoginPanel.add(adminPasswordField);
+
+                JButton adminSubmitButton = new JButton("ورود");
+                JButton adminBackButton = new JButton("بازگشت");
+
+                adminSubmitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String adminUsername = adminUsernameTextField.getText();
+                        String adminPassword = new String(adminPasswordField.getPassword());
+
+                        // اعتبارسنجی نام کاربری مدیر و رمز عبور مدیر
+                        if ("sania".equals(adminUsername) && "saba".equals(adminPassword)) {
+                            JOptionPane.showMessageDialog(adminLoginPage, "ورود مدیر موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
+                            adminLoginPage.dispose();
+                             new NextPage();
+
+                        } else {
+                            JOptionPane.showMessageDialog(adminLoginPage, "نام کاربری یا رمز عبور مدیر اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+
+                adminBackButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        adminLoginPage.dispose();
+                    }
+                });
+
+                adminLoginPanel.add(adminSubmitButton);
+                adminLoginPanel.add(adminBackButton);
+
+                adminLoginPage.add(adminLoginPanel);
+                adminLoginPage.setVisible(true);
+            }
+        });
+
+        panel.add(adminLoginButton);
+
+        panel.add(registerButton);
+        panel.add(loginButton);
+        panel.add(adminLoginButton);
 
         add(panel);
         setVisible(true);
     }
-    public static void main(String[] args) {
-        new ShoppingPanel();
+
+    private boolean isValidLogin(String username, String password) {
+        // اینجا می‌توانید عملیات اعتبارسنجی نام کاربری و رمز عبور را انجام دهید
+        // مثال: اگر نام کاربری و رمز عبور غیر خالی بودند، ورود را تأیید کنید
+        if (!username.isEmpty() && !password.isEmpty()) {
+            return true;
+        }
+        return false;
     }
-}
+
+
+    public static void main(String[] args) {
+        new StorePage();
+    }
+    }
 
