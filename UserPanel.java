@@ -2,28 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class NextPage extends JFrame {
+public class UserPanel extends JFrame {
 
     private ArrayList<Product> items;
     private ArrayList<String> shoppingCart;
 
-    public NextPage() {
-        setTitle("صفحه فروشگاه");
-        setSize(400, 300);
+    public UserPanel() {
+        setTitle("صفحه اصلی فروشگاه");
+        setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel shoppingCartPanel = new JPanel(new GridLayout(0, 3));
-        items = new ArrayList<>();
-        items.add(new Product("پیراهن   50000تومن", 50));
-        items.add(new Product("شلوار   70000تومن", 70));
-        items.add(new Product(" جوراب   20000تومن", 20));
-        items.add(new Product("  کفش     100000 تومن", 100));
+        items = loadItemsFromFile();
+
 
         for (Product item : items) {
             JLabel itemLabel = new JLabel(item.getName());
@@ -59,7 +59,6 @@ public class NextPage extends JFrame {
         panel.add(shoppingCartPanel, BorderLayout.CENTER);
 
         JPanel addNewItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JTextField newItemField = new JTextField(10);
         JButton shoppingCartButton = new JButton("سبد خرید");
         JButton searchButton = new JButton("جستجو");
         JButton sortPriceButton = new JButton("مرتب سازی بر اساس قیمت");
@@ -147,7 +146,6 @@ public class NextPage extends JFrame {
             }
         });
 
-        addNewItemPanel.add(newItemField);
         addNewItemPanel.add(shoppingCartButton);
         addNewItemPanel.add(searchButton);
 
@@ -159,25 +157,25 @@ public class NextPage extends JFrame {
         setVisible(true);
     }
 
+    public ArrayList<Product> loadItemsFromFile() {
+        ArrayList<Product> items = new ArrayList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("items.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] info = line.split(";");
+                Product p = new Product(info[0],Integer.valueOf(info[1]));
+                items.add(p);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
     public static void main(String[] args) {
-        new NextPage();
+        new UserPanel();
     }
 }
 
-class Product {
-    private String name;
-    private int price;
-
-    public Product(String name, int price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-}
