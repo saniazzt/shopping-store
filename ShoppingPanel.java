@@ -1,6 +1,3 @@
-import next1.NextPage1;
-import shop.NextPage;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -181,7 +178,7 @@ public class StorePage extends JFrame {
                         if (isValidLogin(username, password)) {
                             JOptionPane.showMessageDialog(loginPage, "ورود موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             loginPage.dispose();
-                            new NextPage();
+                            new UserPanel();
 
 
                         } else {
@@ -239,8 +236,7 @@ public class StorePage extends JFrame {
                         if ("sania".equals(adminUsername) && "saba".equals(adminPassword)) {
                             JOptionPane.showMessageDialog(adminLoginPage, "ورود مدیر موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             adminLoginPage.dispose();
-                            new NextPage1();
-
+                            new AdminPanel();
 
                         } else {
                             JOptionPane.showMessageDialog(adminLoginPage, "نام کاربری یا رمز عبور مدیر اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
@@ -252,7 +248,7 @@ public class StorePage extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         adminLoginPage.dispose();
-                        new NextPage();
+                        new UserPanel();
                     }
                 });
 
@@ -287,9 +283,5 @@ public class StorePage extends JFrame {
     public static void main(String[] args) {
         new StorePage();
     }
-    }
-
-
-
-
+}
 
