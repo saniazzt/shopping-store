@@ -12,9 +12,8 @@ import java.util.Comparator;
 public class UserPanel extends JFrame {
 
     private ArrayList<Product> items;
-    private ArrayList<String> shoppingCart;
+    private ArrayList<Product> shoppingCart;
     private Wallet wallet;
-
 
     public UserPanel() {
         setTitle("صفحه اصلی فروشگاه");
@@ -26,7 +25,7 @@ public class UserPanel extends JFrame {
         JPanel shoppingCartPanel = new JPanel(new GridLayout(0, 3));
         items = loadItemsFromFile();
 
-        wallet = new Wallet(60);
+        wallet = new Wallet(600);
 
         for (Product item : items) {
             JLabel itemLabel = new JLabel(item.getName());
@@ -36,27 +35,20 @@ public class UserPanel extends JFrame {
             addToCartBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (wallet.canAfford(item.getPrice())) {
-                        shoppingCart.add(item.getName());
-                        wallet.withdraw(item.getPrice());
-                        JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "موجودی کافی نیست. لطفا مبلغ بیشتری به کیف پول اضافه کنید.");
-                    }
+
+                    shoppingCart.add(item);
+                    JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
+                    
                 }
             });
 
             removeFromCartBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    shoppingCart.remove(item.getName());
-                    wallet.deposit(item.getPrice());
-                    shoppingCartPanel.remove(itemLabel);
-                    shoppingCartPanel.remove(addToCartBtn);
-                    shoppingCartPanel.remove(removeFromCartBtn);
-                    shoppingCartPanel.revalidate();
-                    shoppingCartPanel.repaint();
-                    JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از سبد خرید حذف شد.");
+                    if (shoppingCart.contains(item)){
+                        shoppingCart.remove(item);
+                        JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از سبد خرید حذف شد.");
+                    }
                 }
             });
 
@@ -76,11 +68,55 @@ public class UserPanel extends JFrame {
         shoppingCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 String cartItems = "";
-                for (String item : shoppingCart) {
-                    cartItems += item + "\n";
+                int total = 0;
+                for (Product item : shoppingCart) {
+                    cartItems += item.getName() + "\n";
+                    total += item.getPrice();
                 }
-                JOptionPane.showMessageDialog(null, "کالاهای موجود در سبد خرید:\n" + cartItems + "\nموجودی کیف پول: " + wallet.getBalance() + " تومان");
+                final int overalPrice = total;
+
+                JFrame CheckoutPage = new JFrame("سبد خرید");
+                CheckoutPage.setSize(300, 500);
+                CheckoutPage.setLocationRelativeTo(null);
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(5, 1));
+
+                panel.add(new JLabel("کالاهای موجود در سبد خرید:\n"));
+                panel.add(new JLabel(cartItems));
+                panel.add(new JLabel("مجموع قیمت: " + overalPrice + " تومان"));
+                panel.add(new JLabel("موجودی کیف پول: " + wallet.getBalance() + " تومان"));
+
+                JButton checkout = new JButton("ثبت نهایی");
+
+                checkout.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        if (overalPrice == 0){
+                            JOptionPane.showMessageDialog(null, "محصولی انتخاب نشده است.");
+                            return;
+                        }
+
+                        if (wallet.canAfford(overalPrice)){
+
+                            wallet.withdraw(overalPrice);
+
+                            JOptionPane.showMessageDialog(null, "خرید با موفقیت ثبت شد." +
+                                                                 "\n موجودی کیف پول: " + wallet.getBalance());
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "موجودی کافی نیست. لطفا مبلغ بیشتری به حساب اضافه کنید.");
+                        }
+                    }
+                });
+
+                panel.add(checkout);
+                
+                CheckoutPage.add(panel);
+                CheckoutPage.setVisible(true);
             }
         });
 
@@ -89,14 +125,15 @@ public class UserPanel extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String searchItem = JOptionPane.showInputDialog("لطفا نام محصول را وارد کنید:");
                 boolean found = false;
+                String foundedList = "";
                 for (Product item : items) {
-                    if (item.getName().equals(searchItem)) {
+                    if (item.getName().contains(searchItem)) {
                         found = true;
-                        break;
+                        foundedList += item.getName() + "\n";
                     }
                 }
                 if (found) {
-                    JOptionPane.showMessageDialog(null, "محصول " + searchItem + " در فروشگاه موجود است.");
+                    JOptionPane.showMessageDialog(null, "محصول " + searchItem + " در فروشگاه موجود است." + "\nنتایچ جستجو: " + foundedList);
                 } else {
                     JOptionPane.showMessageDialog(null, "محصول " + searchItem + " در فروشگاه موجود نیست.");
                 }
@@ -129,7 +166,7 @@ public class UserPanel extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (wallet.canAfford(item.getPrice())) {
-                                shoppingCart.add(item.getName());
+                                shoppingCart.add(item);
                                 wallet.withdraw(item.getPrice());
                                 JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
                             } else {
@@ -192,4 +229,3 @@ public class UserPanel extends JFrame {
         new UserPanel();
     }
 }
-
