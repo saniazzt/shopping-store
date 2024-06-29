@@ -3,12 +3,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StorePage extends JFrame {
+public class ShoppingPanel extends JFrame {
     private JButton registerButton;
     private JButton loginButton;
     private JButton adminLoginButton;
 
-    public StorePage() {
+    public ShoppingPanel() {
         setTitle("فروشگاه آنلاین");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
