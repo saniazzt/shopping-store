@@ -1,30 +1,28 @@
-package org.example;
-
 class Wallet {
 
-    private String balance;
+    private int balance;
 
     public Wallet(int initialBalance) {
-        this.balance = Integer.toString(initialBalance);
+        this.balance = initialBalance;
     }
 
     public boolean canAfford(int price) {
-        int currentBalance = Integer.parseInt(balance);
+        int currentBalance = balance;
         return currentBalance >= price;
     }
     public void withdraw(int price) {
-        // اینجا محاسبات مربوط به برداشت وجه از کیف پول قرار می‌گیرد
+        this.balance -= price;
     }
 
-    public void deposit(int price) {
-        // اینجا محاسبات مربوط به واریز وجه به کیف پول قرار می‌گیرد
+    public void deposit(int amount) {
+        this.balance += amount;
     }
 
-    public String getBalance() {
+    public int getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 }
