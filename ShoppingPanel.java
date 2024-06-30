@@ -2,11 +2,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class ShoppingPanel extends JFrame {
+
+    public static final String USER_DATA_FILE = "users.dat";
+
     private JButton registerButton;
     private JButton loginButton;
     private JButton adminLoginButton;
+    private ArrayList<User> registeredUsers = new ArrayList<>();
+
 
     public ShoppingPanel() {
         setTitle("فروشگاه آنلاین");
@@ -75,6 +90,8 @@ public class ShoppingPanel extends JFrame {
                         String password = new String(passwordField.getPassword());
                         String confirmPassword = new String(confirmPasswordField.getPassword());
 
+                        User user = new User(name, lastName, phoneNumber, username, password);
+
                         boolean hasError = false;
                         StringBuilder errorMessage = new StringBuilder();
 
@@ -98,13 +115,14 @@ public class ShoppingPanel extends JFrame {
                             confirmPasswordField.setBackground(Color.WHITE);
                         }
 
-                        // اعتدام کد...
 
                         if (hasError) {
                             JOptionPane.showMessageDialog(registerPage, errorMessage.toString(), "خطا", JOptionPane.ERROR_MESSAGE);
                         } else {
                             // ثبت نام موفقیت‌آمیز است
                             // اضافه کردن اطلاعات کاربر به پایگاه داده یا سایر عملیات مربوطه
+                            // registeredUsers.add(user);
+                            UserManager.saveUser(user);
 
                             // نمایش پیام موفقیت‌آمیز
                             JOptionPane.showMessageDialog(registerPage, "ثبت نام با موفقیت انجام شد.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
@@ -178,8 +196,13 @@ public class ShoppingPanel extends JFrame {
                         if (isValidLogin(username, password)) {
                             JOptionPane.showMessageDialog(loginPage, "ورود موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             loginPage.dispose();
-                            new UserPanel();
-
+                            User thisUser = new User(" ", " ", " ", "guest", " ");
+                            for (User user : registeredUsers){
+                                if (user.getUsername().equals(username)){      
+                                    thisUser = user;
+                                }
+                            }
+                            new UserPanel(thisUser);
 
                         } else {
                             JOptionPane.showMessageDialog(loginPage, "نام کاربری یا رمز عبور اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
@@ -233,7 +256,7 @@ public class ShoppingPanel extends JFrame {
                         String adminPassword = new String(adminPasswordField.getPassword());
 
                         // اعتبارسنجی نام کاربری مدیر و رمز عبور مدیر
-                        if ("sania".equals(adminUsername) && "saba".equals(adminPassword)) {
+                        if (isValidAdminLogin(adminUsername, adminPassword)) {
                             JOptionPane.showMessageDialog(adminLoginPage, "ورود مدیر موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             adminLoginPage.dispose();
                             new AdminPanel();
@@ -248,7 +271,7 @@ public class ShoppingPanel extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         adminLoginPage.dispose();
-                        new UserPanel();
+                        // new UserPanel();
                     }
                 });
 
@@ -270,18 +293,65 @@ public class ShoppingPanel extends JFrame {
         setVisible(true);
     }
 
-    private boolean isValidLogin(String username, String password) {
-        // اینجا می‌توانید عملیات اعتبارسنجی نام کاربری و رمز عبور را انجام دهید
-        // مثال: اگر نام کاربری و رمز عبور غیر خالی بودند، ورود را تأیید کنید
-        if (!username.isEmpty() && !password.isEmpty()) {
-            return true;
+    // private boolean isValidLogin(String username, String password) {
+    //     // اینجا می‌توانید عملیات اعتبارسنجی نام کاربری و رمز عبور را انجام دهید
+    //     // مثال: اگر نام کاربری و رمز عبور غیر خالی بودند، ورود را تأیید کنید
+    //     if (!username.isEmpty() && !password.isEmpty()) {
+    //         for (User user : registeredUsers){
+
+    //             if (user.getUsername().equals(username)){
+    //                 if(user.getPassword().equals(password)){
+    //                     return true;
+    //                 }
+    //             }
+    //         }
+        
+    //     }
+    //     return false;
+    // }
+
+    private static boolean isValidLogin(String username, String password) {
+        ArrayList<User> users = UserManager.loadUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
+            }
         }
         return false;
     }
 
+    private static boolean isValidAdminLogin(String adminUsername, String adminPassword) {
+        return adminUsername.equals("admin") && adminPassword.equals("1234");
+    }
 
     public static void main(String[] args) {
         new ShoppingPanel();
+    }
+}
+
+class UserManager {
+    public static void saveUser(User user) {
+        ArrayList<User> users = loadUsers();
+        users.add(user);
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(ShoppingPanel.USER_DATA_FILE));
+            outputStream.writeObject(users);
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<User> loadUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(ShoppingPanel.USER_DATA_FILE));
+            users = (ArrayList<User>) inputStream.readObject();
+            inputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            // Ignore if the file doesn't exist or cannot be read
+        }
+        return users;
     }
 }
 
