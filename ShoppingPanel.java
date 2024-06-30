@@ -20,10 +20,10 @@ public class ShoppingPanel extends JFrame {
     private JButton registerButton;
     private JButton loginButton;
     private JButton adminLoginButton;
-    private ArrayList<User> registeredUsers = new ArrayList<>();
-
+    private ArrayList<User> registeredUsers;
 
     public ShoppingPanel() {
+        registeredUsers = UserManager.loadUsers();
         setTitle("فروشگاه آنلاین");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
@@ -196,13 +196,13 @@ public class ShoppingPanel extends JFrame {
                         if (isValidLogin(username, password)) {
                             JOptionPane.showMessageDialog(loginPage, "ورود موفقیت‌آمیز بود.", "موفقیت", JOptionPane.INFORMATION_MESSAGE);
                             loginPage.dispose();
-                            User thisUser = new User(" ", " ", " ", "guest", " ");
                             for (User user : registeredUsers){
                                 if (user.getUsername().equals(username)){      
-                                    thisUser = user;
+                                    new UserPanel(user);     
+                                    break;
                                 }
                             }
-                            new UserPanel(thisUser);
+                            
 
                         } else {
                             JOptionPane.showMessageDialog(loginPage, "نام کاربری یا رمز عبور اشتباه است.", "خطا", JOptionPane.ERROR_MESSAGE);
