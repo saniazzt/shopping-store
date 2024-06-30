@@ -45,6 +45,7 @@ public class AdminPanel extends JFrame {
                                                 Integer.valueOf(newItemPriceField.getText()),0,0);
                 if (newProduct!=null) {
 
+                    shoppingCartPanel.removeAll();
                     items.add(newProduct);
 
                     displayItems();
@@ -170,6 +171,7 @@ public class AdminPanel extends JFrame {
                     items.remove(item);
                     shoppingCartPanel.remove(itemLabel);
                     shoppingCartPanel.remove(removeFromCartBtn);
+                    shoppingCartPanel.remove(itemScore);
                     shoppingCartPanel.revalidate();
                     shoppingCartPanel.repaint();
                     JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از فروشگاه حذف شد.");
