@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -19,22 +17,93 @@ public class UserPanel extends JFrame {
     private ArrayList<Product> shoppingCart = new ArrayList<>();
     private Wallet wallet;
 
-    public UserPanel() {
+    public UserPanel(User user) {
+
         setTitle("صفحه اصلی فروشگاه");
         setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
 
+        JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton profileButton = new JButton("پروفایل کاربر" + user.getUsername());
+        profilePanel.add(profileButton);
+
+        profileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFrame ProfilePage = new JFrame("پروفایل کاربر");
+                ProfilePage.setSize(300, 600);
+                ProfilePage.setLocationRelativeTo(null);
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(0, 1));
+
+                JLabel passwordLabel = new JLabel("رمز عبور قدیمی:");
+                JPasswordField passwordField = new JPasswordField();
+
+
+                JLabel confirmPasswordLabel = new JLabel("رمز عبور جدید: ");
+                JPasswordField confirmPasswordField = new JPasswordField();
+                panel.add(confirmPasswordLabel);
+                panel.add(confirmPasswordField);
+
+                JButton passChange = new JButton("تغییر رمز عبور");
+
+                passChange.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        String password = new String(passwordField.getPassword());
+                        String newPassword = new String(confirmPasswordField.getPassword());
+
+                        StringBuilder errorMessage = new StringBuilder();
+
+                        if (!password.equals(user.getPassword())) {
+                            errorMessage.append("رمز عبور اشتباه است.\n");
+                            passwordField.setBackground(Color.RED);
+                            confirmPasswordField.setBackground(Color.RED);
+                            JOptionPane.showMessageDialog(null, errorMessage.toString(), "خطا", JOptionPane.ERROR_MESSAGE);
+                            passwordField.setText("");
+                            confirmPasswordField.setText("");
+                        } else {
+                            user.setPassword(newPassword);
+                            passwordField.setBackground(Color.WHITE);
+                            confirmPasswordField.setBackground(Color.WHITE);
+                            JOptionPane.showMessageDialog(null, "رمز عبور با موفقیت تغییر کرد.");
+                        }
+                    }
+                });
+
+                panel.add(new JLabel("نام: "+ user.getName()));
+                panel.add(new JLabel("نام خانوادگی: " + user.getLastName()));
+                panel.add(new JLabel("شماره تلفن: " + user.getPhoneNumber()));
+                panel.add(new JLabel("نام کاربری: " + user.getUsername()));
+                panel.add(new JLabel("موجودی کیف پول: " + user.getWallet().getBalance() + " تومان"));
+
+                panel.add(passwordLabel);
+                panel.add(passwordField);
+                panel.add(confirmPasswordLabel);
+                panel.add(confirmPasswordField);
+
+                panel.add(passChange);
+
+                ProfilePage.add(panel);
+                ProfilePage.setVisible(true);
+
+            }
+        });
+
+        panel.add(profilePanel, BorderLayout.NORTH);
+        
+        //منوی محصولات 
+
         items = loadItemsFromFile();
-
-        wallet = new Wallet(600);
-
         displayItems();
         panel.add(shoppingCartPanel, BorderLayout.CENTER);
 
-
-//منوی جستجو و سبد خرید و مرتب سازی محصولات 
+        //منوی جستجو و سبد خرید و مرتب سازی محصولات 
 
         JPanel addNewItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton shoppingCartButton = new JButton("سبد خرید");
@@ -46,6 +115,8 @@ public class UserPanel extends JFrame {
         shoppingCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                System.out.println(user.getUsername());
 
                 String cartItems = "";
                 int total = 0;
@@ -78,12 +149,12 @@ public class UserPanel extends JFrame {
                             return;
                         }
 
-                        if (wallet.canAfford(overalPrice)){
+                        if (user.getWallet().canAfford(overalPrice)){
 
-                            wallet.withdraw(overalPrice);
+                            user.getWallet().withdraw(overalPrice);
 
                             JOptionPane.showMessageDialog(null, "خرید با موفقیت ثبت شد." +
-                                                                 "\n موجودی کیف پول: " + wallet.getBalance());
+                                                                 "\n موجودی کیف پول: " + user.getWallet().getBalance());
                             shoppingCart.clear();                                 
                         }
                         else{
@@ -285,6 +356,6 @@ public class UserPanel extends JFrame {
     }
 
     public static void main(String[] args) {
-        new UserPanel();
+        new UserPanel(new User("g", "u", "0", "guest", "123"));
     }
 }
