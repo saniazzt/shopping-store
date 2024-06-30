@@ -10,8 +10,11 @@ public class AdminPanel extends JFrame {
     private ArrayList<Product> items;
     private JPanel shoppingCartPanel;
     private JTextField newItemNameField,newItemPriceField;
+    private ArrayList<User> registeredUsers;
 
     public AdminPanel() {
+        registeredUsers = loadUsers();
+
         setTitle("پنل مدیریت");
         setSize(700, 400);
         setLayout(new GridLayout(5,3));
@@ -30,6 +33,8 @@ public class AdminPanel extends JFrame {
         JButton searchButton = new JButton("جستجو");
         JButton sortPriceButton = new JButton("مرتب سازی بر اساس قیمت");
         JButton sortScoreButton = new JButton("مرتب سازی بر اساس امتیاز");
+        JButton showUsersButton = new JButton("نمایش کاربران");
+
         JPanel addNewItemPanel = new JPanel();
 
         addItemButton.addActionListener(new ActionListener() {
@@ -113,6 +118,18 @@ public class AdminPanel extends JFrame {
             }
         });
 
+        showUsersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String users = "";
+                int t = 1;
+                for (User user : registeredUsers) {
+                    users += t++ +"-"+ user.getUsername() +"\n";
+                }
+                JOptionPane.showMessageDialog(null, "کاربران:\n " + users);
+            }
+        });
+
         addNewItemPanel.add(new JLabel("نام محصول:"));
         addNewItemPanel.add(newItemNameField);
         addNewItemPanel.add(new JLabel("قیمت محصول:"));
@@ -121,6 +138,7 @@ public class AdminPanel extends JFrame {
         addNewItemPanel.add(searchButton);
         addNewItemPanel.add(sortPriceButton);
         addNewItemPanel.add(sortScoreButton);
+        addNewItemPanel.add(showUsersButton);
 
         add(addNewItemPanel, BorderLayout.SOUTH);
 
@@ -197,5 +215,17 @@ public class AdminPanel extends JFrame {
 
     public static void main(String[] args) {
         new AdminPanel();
+    }
+
+    public static ArrayList<User> loadUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(ShoppingPanel.USER_DATA_FILE));
+            users = (ArrayList<User>) inputStream.readObject();
+            inputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            // Ignore if the file doesn't exist or cannot be read
+        }
+        return users;
     }
 }
