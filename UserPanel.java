@@ -1,18 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public class UserPanel extends JFrame {
 
+    public JPanel shoppingCartPanel = new JPanel(new GridLayout(0, 5));
     private ArrayList<Product> items;
-    private ArrayList<Product> shoppingCart;
+    private ArrayList<Product> shoppingCart = new ArrayList<>();
     private Wallet wallet;
 
     public UserPanel() {
@@ -22,48 +26,22 @@ public class UserPanel extends JFrame {
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        JPanel shoppingCartPanel = new JPanel(new GridLayout(0, 3));
         items = loadItemsFromFile();
 
         wallet = new Wallet(600);
 
-        for (Product item : items) {
-            JLabel itemLabel = new JLabel(item.getName());
-            JButton addToCartBtn = new JButton("افزودن به سبد خرید");
-            JButton removeFromCartBtn = new JButton("حذف از سبد خرید");
-
-            addToCartBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    shoppingCart.add(item);
-                    JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
-                    
-                }
-            });
-
-            removeFromCartBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (shoppingCart.contains(item)){
-                        shoppingCart.remove(item);
-                        JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از سبد خرید حذف شد.");
-                    }
-                }
-            });
-
-            shoppingCartPanel.add(itemLabel);
-            shoppingCartPanel.add(addToCartBtn);
-            shoppingCartPanel.add(removeFromCartBtn);
-        }
-
+        displayItems();
         panel.add(shoppingCartPanel, BorderLayout.CENTER);
+
+
+//منوی جستجو و سبد خرید و مرتب سازی محصولات 
 
         JPanel addNewItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton shoppingCartButton = new JButton("سبد خرید");
         JButton searchButton = new JButton("جستجو");
         JButton sortPriceButton = new JButton("مرتب سازی بر اساس قیمت");
-        addNewItemPanel.add(sortPriceButton);
+        JButton sortScoreButton = new JButton("مرتب سازی بر اساس امتیاز");
+
 
         shoppingCartButton.addActionListener(new ActionListener() {
             @Override
@@ -106,6 +84,7 @@ public class UserPanel extends JFrame {
 
                             JOptionPane.showMessageDialog(null, "خرید با موفقیت ثبت شد." +
                                                                  "\n موجودی کیف پول: " + wallet.getBalance());
+                            shoppingCart.clear();                                 
                         }
                         else{
                             JOptionPane.showMessageDialog(null, "موجودی کافی نیست. لطفا مبلغ بیشتری به حساب اضافه کنید.");
@@ -140,6 +119,7 @@ public class UserPanel extends JFrame {
             }
         });
 
+        
         sortPriceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -149,63 +129,142 @@ public class UserPanel extends JFrame {
                         return Integer.compare(p1.getPrice(), p2.getPrice());
                     }
                 });
-
+                
                 // بازسازی نمایش کالاها بر روی صفحه
-                displayItems();
-            }
-
-            private void displayItems() {
                 shoppingCartPanel.removeAll();
-                for (Product item : items) {
-                    JLabel itemLabel = new JLabel(item.getName());
-                    JButton addToCartBtn = new JButton("افزودن به سبد خرید");
-                    JButton removeFromCartBtn = new JButton("حذف از سبد خرید");
 
-
-                    addToCartBtn.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (wallet.canAfford(item.getPrice())) {
-                                shoppingCart.add(item);
-                                wallet.withdraw(item.getPrice());
-                                JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
-                            } else {
-                                JOptionPane.showMessageDialog(null, "موجودی کافی نیست. لطفا مبلغ بیشتری به کیف پول اضافه کنید.");
-                            }
-                        }
-                    });
-
-                    removeFromCartBtn.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            shoppingCart.remove(item.getName());
-                            shoppingCartPanel.remove(itemLabel);
-                            shoppingCartPanel.remove(addToCartBtn);
-                            shoppingCartPanel.remove(removeFromCartBtn);
-                            shoppingCartPanel.revalidate();
-                            shoppingCartPanel.repaint();
-                            JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از سبد خرید حذف شد.");
-                        }
-                    });
-
-                    shoppingCartPanel.add(itemLabel);
-                    shoppingCartPanel.add(addToCartBtn);
-                    shoppingCartPanel.add(removeFromCartBtn);
-                }
+                displayItems();
+                
                 shoppingCartPanel.revalidate();
                 shoppingCartPanel.repaint();
             }
         });
 
+        sortScoreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Collections.sort(items, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product p1, Product p2) {
+                        return Integer.compare((int)p1.getScore(), (int)p2.getScore());
+                    }
+                });
+                
+                // بازسازی نمایش کالاها بر روی صفحه
+                shoppingCartPanel.removeAll();
+
+                displayItems();
+                
+                shoppingCartPanel.revalidate();
+                shoppingCartPanel.repaint();
+            }
+        });
+
+        addNewItemPanel.add(sortPriceButton);
+        addNewItemPanel.add(sortScoreButton);
         addNewItemPanel.add(shoppingCartButton);
         addNewItemPanel.add(searchButton);
 
         panel.add(addNewItemPanel, BorderLayout.SOUTH);
 
-        shoppingCart = new ArrayList<>();
-
         add(panel);
         setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveItemsToFile(items);
+            }
+        });
+    }
+
+    //نمایش منوی محصولات
+
+    public void displayItems() {
+
+        for (Product item : items) {
+
+            JLabel itemLabel = new JLabel(item.getName());
+            JLabel itemScore = new JLabel();
+            JButton scoreBtn = new JButton("امتیازدهی");
+            JButton addToCartBtn = new JButton("افزودن به سبد خرید");
+            JButton removeFromCartBtn = new JButton("حذف از سبد خرید");
+
+            if (item.getScore() != 0.0)
+                itemScore.setText(String.valueOf(item.getScore()));
+            else
+                itemScore.setText("بدون امتیاز");
+
+
+            scoreBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    String userScore = JOptionPane.showInputDialog("لطفا امتیازی که به محصول می‌دهید را وارد کنید: (5-0)");
+
+                    if (Float.valueOf(userScore)<=5 && Float.valueOf(userScore)>=0){
+
+                    float newScore = (Float.valueOf(userScore) + item.getScoredNum()*item.getScore())/(item.getScoredNum()+1);
+                    item.setScore(newScore);
+                    item.setScoredNum(item.getScoredNum()+1);
+
+                    if (item.getScore() != 0.0)
+                        itemScore.setText(String.valueOf(item.getScore()));
+                    else
+                        itemScore.setText("بدون امتیاز");
+
+                    scoreBtn.setEnabled(false);
+                    shoppingCartPanel.revalidate();
+                    shoppingCartPanel.repaint();
+
+                    } else {
+                        JOptionPane.showMessageDialog(null, "لطفا امتیازی بین ۰ تا ۵ وارد کنید.");
+                    }
+
+                }
+            });
+
+            addToCartBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    shoppingCart.add(item);
+                    JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " به سبد خرید اضافه شد.");
+                    
+                }
+            });
+
+            removeFromCartBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (shoppingCart.contains(item)){
+                        shoppingCart.remove(item);
+                        JOptionPane.showMessageDialog(null, "محصول " + item.getName() + " از سبد خرید حذف شد.");
+                    }
+                }
+            });
+
+            shoppingCartPanel.add(itemLabel);
+            shoppingCartPanel.add(itemScore);
+            shoppingCartPanel.add(scoreBtn);
+            shoppingCartPanel.add(addToCartBtn);
+            shoppingCartPanel.add(removeFromCartBtn);
+        }
+
+    }
+
+
+    public void saveItemsToFile(ArrayList<Product> items) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("items.txt"));
+            for (Product item : items) {
+                writer.write( item.getName() +";"+ item.getPrice() +";"+ item.getScore() +";"+ item.getScoredNum() +"\n");
+            }
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Product> loadItemsFromFile() {
@@ -215,7 +274,7 @@ public class UserPanel extends JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] info = line.split(";");
-                Product p = new Product(info[0],Integer.valueOf(info[1]));
+                Product p = new Product(info[0],Integer.valueOf(info[1]),Float.valueOf(info[2]),Integer.valueOf(info[3]));
                 items.add(p);
             }
             reader.close();
