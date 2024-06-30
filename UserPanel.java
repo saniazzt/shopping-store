@@ -25,6 +25,8 @@ public class UserPanel extends JFrame {
 
         JPanel panel = new JPanel(new BorderLayout());
 
+        wallet = new Wallet(user.getUserBalance());
+
         JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton profileButton = new JButton("پروفایل کاربر" + user.getUsername());
         profilePanel.add(profileButton);
@@ -42,7 +44,6 @@ public class UserPanel extends JFrame {
 
                 JLabel passwordLabel = new JLabel("رمز عبور قدیمی:");
                 JPasswordField passwordField = new JPasswordField();
-
 
                 JLabel confirmPasswordLabel = new JLabel("رمز عبور جدید: ");
                 JPasswordField confirmPasswordField = new JPasswordField();
@@ -80,7 +81,7 @@ public class UserPanel extends JFrame {
                 panel.add(new JLabel("نام خانوادگی: " + user.getLastName()));
                 panel.add(new JLabel("شماره تلفن: " + user.getPhoneNumber()));
                 panel.add(new JLabel("نام کاربری: " + user.getUsername()));
-                panel.add(new JLabel("موجودی کیف پول: " + user.getWallet().getBalance() + " تومان"));
+                panel.add(new JLabel("موجودی کیف پول: " + wallet.getBalance() + " تومان"));
 
                 panel.add(passwordLabel);
                 panel.add(passwordField);
@@ -149,12 +150,12 @@ public class UserPanel extends JFrame {
                             return;
                         }
 
-                        if (user.getWallet().canAfford(overalPrice)){
+                        if (wallet.canAfford(overalPrice)){
 
-                            user.getWallet().withdraw(overalPrice);
+                            wallet.withdraw(overalPrice);
 
                             JOptionPane.showMessageDialog(null, "خرید با موفقیت ثبت شد." +
-                                                                 "\n موجودی کیف پول: " + user.getWallet().getBalance());
+                                                                 "\n موجودی کیف پول: " + wallet.getBalance());
                             shoppingCart.clear();                                 
                         }
                         else{
@@ -324,7 +325,6 @@ public class UserPanel extends JFrame {
 
     }
 
-
     public void saveItemsToFile(ArrayList<Product> items) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("items.txt"));
@@ -356,6 +356,6 @@ public class UserPanel extends JFrame {
     }
 
     public static void main(String[] args) {
-        new UserPanel(new User("g", "u", "0", "guest", "123"));
+        new UserPanel(new User(" ", " ", " ", "guest", "123"));
     }
 }
