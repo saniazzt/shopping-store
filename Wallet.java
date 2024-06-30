@@ -1,4 +1,4 @@
-cimport java.io.Serializable;
+import java.io.Serializable;
 
 class Wallet implements Serializable{
     
