@@ -42,23 +42,7 @@ public class AdminPanel extends JFrame {
 
                     items.add(newProduct);
 
-                    JLabel newItemLabel = new JLabel(newProduct.getName());
-                    JButton newRemoveFromCartBtn = new JButton("حذف از فروشگاه");
-
-                    newRemoveFromCartBtn.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            items.remove(newProduct);
-                            shoppingCartPanel.remove(newItemLabel);
-                            shoppingCartPanel.remove(newRemoveFromCartBtn);
-                            shoppingCartPanel.revalidate();
-                            shoppingCartPanel.repaint();
-                            JOptionPane.showMessageDialog(null, "محصول " + newProduct + " از فروشگاه حذف شد.");
-                        }
-                    });
-
-                    shoppingCartPanel.add(newItemLabel);
-                    shoppingCartPanel.add(newRemoveFromCartBtn);
+                    displayItems();
 
                     shoppingCartPanel.revalidate();
                     shoppingCartPanel.repaint();
