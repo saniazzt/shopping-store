@@ -1,9 +1,50 @@
-# shopping-store
-This repository is made for advanced programming final project.
-This project is an online shopping store program written in Java language.
-The program allows users to use the program as a customer or store manager.
-This program has various features, for example, if you log in as a customer, you can create an account and then view your user profile, which includes personal information and your previous purchases.
-Customers can also sort the products in the store based on price and rating, and customers themselves can rate the products.
-Buyers can use the search section to search for the desired product to see if it is available in the store, its price, and also compare it with their current wallet balance. Additionally, a shopping cart is provided for buyers to see the products they have chosen and the total price and compare it with their current wallet balance.
-If you log in as a store manager, you can manage the store's items, meaning you can add or remove products from the store.
-As a manager, you can also sort the products in your store based on price or the ratings given by users, or search for their names in your panel.
+# Shopping Store - Java Application
+
+A desktop-based shopping store application developed in Java, designed as an advanced programming final project. This application offers a user-friendly interface for both customers and store managers, facilitating account management, product browsing, and transaction handling.
+
+---
+
+## Features
+
+### Customer Features
+
+- **Account Management**: Create, view, and update personal profiles.
+- **Product Browsing**: Browse available products with detailed information.
+- **Shopping Cart**: Add products to the cart and proceed to checkout.
+- **Order History**: View past purchases and order statuses.
+- **Wallet Integration**: Manage virtual wallet for transactions.
+
+### Store Manager Features
+
+- **Product Management**: Add, update, or remove products from the inventory.
+- **Order Processing**: View and manage customer orders.
+- **User Management**: Monitor customer activities and manage user accounts.
+
+---
+
+## Technologies Used
+
+- **Java**: Core programming language.
+- **Swing**: GUI framework for desktop application.
+
+---
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/saniazzt/shopping-store.git
+cd shopping-store
+```
+
+2. Compile and run the application:
+```bash
+javac *.java
+java Main
+```
+This will open the ShoppingPanel GUI for signing in.
+
+Default admin information:
+- username: admin
+- password: 1234
